@@ -452,6 +452,50 @@ float promDefensa(int op){
 		}
 		return def /= objStark.getEjercito().size();
 		break;
+	case 2:
+		for (size_t i = 0; i < objLan.getEjercito().size(); i++)
+		{
+			def += promedioG(objLan.getEjercito()[i], false);
+		}
+		return def /= objLan.getEjercito().size();
+		break;
+	case 3:
+		for (size_t i = 0; i < objTar.getEjercito().size(); i++)
+		{
+			def += promedioD(objTar.getEjercito()[i], false);
+		}
+		return def /= objTar.getEjercito().size();
+		break;
+	default:
+		break;
+	}
+}
+
+float promAtaque(int op){
+	int atk = 0;
+	switch (op)
+	{
+	case 1:
+		for (size_t i = 0; i < objStark.getEjercito().size(); i++)
+		{
+			atk += promedioPFN(objStark.getEjercito()[i], true);
+		}
+		return atk /= objStark.getEjercito().size();
+		break;
+	case 2:
+		for (size_t i = 0; i < objLan.getEjercito().size(); i++)
+		{
+			atk += promedioG(objLan.getEjercito()[i], true);
+		}
+		return atk /= objLan.getEjercito().size();
+		break;
+	case 3:
+		for (size_t i = 0; i < objTar.getEjercito().size(); i++)
+		{
+			atk += promedioD(objTar.getEjercito()[i], true);
+		}
+		return atk /= objTar.getEjercito().size();
+		break;
 	default:
 		break;
 	}
@@ -461,28 +505,41 @@ void simulacion(){
 	int first, second;
 	while(true){
 		first = menuF();
-		if (first < 4 && first > 0){
+		if (first == 1){
 			break;
 		}else{
-			cout << "No existe esa Familia!!" << endl;
+			cout << "Solo es admitida la familia 1" << endl;
 		}
 	}
 	while(true){
 		second = menuF();
-		if ((second < 4 && second > 0) && second != first){
+		if (second == 2){
 			break;
 		}else{
-			cout << "No existe esa Familia!! o ya se esta usando" << endl;
+			cout << "Solo es admitida la familia 2" << endl;
 		}
 	}
 	bool winner = false, cambio = true;
 	if(first == 1 && second == 2){
-
+		float def1, def2, atk1, atk2;
+		def1 = promDefensa(1);
+		def2 = promDefensa(2);
+		atk1 = promAtaque(1);
+		atk2 = promAtaque(2);
 		while (!winner){
 			if (cambio){
-				
+				def2 -= atk1;
+				cambio = false;
 			}else{
-
+				def1 -= atk2;
+				cambio = true;
+			}
+			if (def1 == 0){
+				cout << "El Ganador es la Familia 1" << endl;
+				winner = true;
+			}else if(def2 == 0){
+				cout << "El Ganador es la Familia 2" << endl;
+				winner = true;
 			}
 		}
 	}
@@ -498,7 +555,12 @@ void selectorG(){
 				selectorE();
 				break;
 			case 2:
-				//simulacion();
+				if (objStark.getJefeF() == "" || objLan.getJefeF() == "" || objTar.getReina() == "")
+				{
+					cout << "Debe crear todas las familias primero" << endl;
+				}else{
+					simulacion();
+				}
 				break;
 			case 3:
 				salida = false;
